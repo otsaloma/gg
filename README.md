@@ -19,6 +19,8 @@ and the ggplot2 documentation is the documentation for gg too.
 - Arguments are not checked on the Python side; errors come from R
 - This is a hack for personal use, the API might change
 
+![Screenshot](screenshot.png)
+
 ## Installation
 
 ```bash
