@@ -5,10 +5,10 @@ build-backend = "hatchling.build"
 [project]
 name = "gg"
 dynamic = ["version"]
-description = "R's ggplot2 Plotting for Dataiter"
+description = "Plot Python Data Frames with ggplot2"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.1.0"
+requires-python = ">=3.10.0"
 authors = [{ name = "Osmo Salomaa", email = "otsaloma@iki.fi" }]
 
 [project.urls]
