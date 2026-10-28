@@ -72,7 +72,8 @@ class plot:
         path = Path(path).resolve()
         with tempfile.NamedTemporaryFile(suffix=".parquet") as f:
             data_path = f.name
-            self.data.write_parquet(data_path)
+            write_parquet = getattr(self.data, "write_parquet", None) or self.data.to_parquet
+            write_parquet(data_path)
             kwargs = dict(width=width, height=height, units=units, dpi=dpi, **kwargs)
             code = "\n".join((
                 f"library(ggplot2)",
