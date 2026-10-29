@@ -45,4 +45,10 @@ data = di.DataFrame.read_csv("../dataiter/data/vehicles.csv")
 (gg.plot(data, "year")
    .geom_histogram(binwidth=1, boundary=0)
    .save("year.png"))
+
+# x and y aesthetics are picked up from gg.plot arguments.
+# For additional geom aesthetics, use gg.aes.
+(gg.plot(data, "displ", "hwy")
+   .geom_point(gg.aes(color="make"))
+   .view())
 ```

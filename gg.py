@@ -13,9 +13,16 @@ __version__ = "0.0"
 # e.g. functions (scales::percent) or expressions in aes (factor(cyl)).
 class R(str): pass
 
+class aes(dict):
+    def __init__(self, x=None, y=None, **kwargs):
+        super().__init__({k: v for k, v in
+                          dict(x=x, y=y, **kwargs).items()
+                          if v is not None})
+
 def to_r(value):
     match value:
         case R(): return value
+        case aes(): return to_r_aes(value)
         case None: return "NULL"
         case True: return "TRUE"
         case False: return "FALSE"
@@ -41,9 +48,9 @@ class Call:
 
 class plot:
 
-    def __init__(self, data, x=None, y=None, **aes):
+    def __init__(self, data, x=None, y=None, **kwargs):
         self.data = data
-        self.aes = {k: v for k, v in dict(x=x, y=y, **aes).items() if v is not None}
+        self.aes = aes(x, y, **kwargs)
         self.calls = []
 
     def __getattr__(self, name):
@@ -60,11 +67,10 @@ class plot:
         if not any(x.name.startswith(("geom_", "stat_")) for x in calls):
             name = "geom_point" if "y" in self.aes else "geom_histogram"
             calls.insert(0, Call(name, (), {}))
-        code = [f"ggplot(data, {to_r_aes(self.aes)})"]
+        code = [f"ggplot(data, {to_r(self.aes)})"]
         for call in calls:
             args = [to_r(x) for x in call.args] + [
-                f"mapping={to_r_aes(v)}" if k == "aes" else f"{k}={to_r(v)}"
-                for k, v in call.kwargs.items()]
+                f"{k}={to_r(v)}" for k, v in call.kwargs.items()]
             code.append("{}({})".format(call.name, ", ".join(args)))
         return " +\n    ".join(code)
 
